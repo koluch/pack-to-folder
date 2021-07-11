@@ -1,6 +1,6 @@
 {
   "name": "pack-to-folder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Runs `npm pack` command and then extracts content to folder",
   "main": "index.js",
   "bin": {
