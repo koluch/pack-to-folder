@@ -8,7 +8,7 @@ const os = require("os");
 const CONTENT_FOLDER_NAME = "package";
 
 module.exports = (options = {}) => {
-  const renameTo = options["renameTo"] ?? "package";
+  const renameTo = options["renameTo"] || "package";
 
   return new Promise((resolve, reject) => {
     exec("npm pack", (exception, stdout, stderr) => {
