@@ -1,4 +1,4 @@
-const fs = require("fs/promises");
+const fs = require("fs-extra");
 const { constants } = require("fs");
 const path = require("path");
 const os = require("os");
