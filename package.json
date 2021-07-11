@@ -1,0 +1,26 @@
+{
+  "name": "pack-to-folder",
+  "version": "0.0.1",
+  "description": "Runs `npm pack` command and then extracts content to folder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Nikolai Mavrenkov",
+    "email": "koluch@koluch.ru",
+    "url": "koluch.ru"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "prettier": "^2.3.2",
+    "tar": "^6.1.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=12"
+  }
+}
