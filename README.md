@@ -1,5 +1,5 @@
 # pack-to-folder
-Runs `npm pack` command and then extracts content to folder
+Runs `npm pack` command and then extracts archive to folder
 
 ## Requirements
 `node >= 12`
@@ -15,4 +15,5 @@ or
 `npx pack-to-folder [--renameTo=package]`
 
 Options:
-  - `renameTo` (optional) - renames `package` folder, can be relative or absolute path
+  - `--renameTo=package` (optional) - renames `package` folder, can be relative or absolute path
+  - `--forceRewrite` (optional) - if target folder already exists, delete it before unpacking

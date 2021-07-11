@@ -5,29 +5,15 @@ const os = require("os");
 
 const lib = require("../index.js");
 
-test("no options", async () => {
-  await lib({});
-  expect(async () => {
-    await fs.access('package', constants.R_OK | constants.W_OK);
-  }).not.toThrow()
-  const files = await fs.readdir("./package")
+const NEW_PACKAGE_NAME = "new-package-name";
 
-  const expectedFiles = [
-    "package.json",
-    "README.md",
-    "cli.js",
-    "index.js",
-  ];
-  expect(files).toHaveLength(expectedFiles.length)
-  expect(files).toEqual(expect.arrayContaining(expectedFiles))
-
-  await fs.rmdir('package', {
+beforeEach(async () => {
+  await fs.rmdir(NEW_PACKAGE_NAME, {
     recursive: true,
-  })
-});
+  }).catch(() => {})
+})
 
-test("raname package folder", async () => {
-  const NEW_PACKAGE_NAME = "new-package-name";
+test("rename folder", async () => {
   await lib({
     renameTo: NEW_PACKAGE_NAME
   });
@@ -44,9 +30,11 @@ test("raname package folder", async () => {
   ];
   expect(files).toHaveLength(expectedFiles.length)
   expect(files).toEqual(expect.arrayContaining(expectedFiles))
+});
 
+afterEach(async () => {
   await fs.rmdir(NEW_PACKAGE_NAME, {
     recursive: true,
-  })
-});
+  }).catch(() => {})
+})
 
