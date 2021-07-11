@@ -13,39 +13,39 @@ function exitWithError(message) {
   process.exit(1);
 }
 
-const argv = minimist(process.argv.slice(2));
+module.exports = (options) => {
+  const renameTo = options["renameTo"] ?? "package";
 
-const renameTo = argv["renameTo"] ?? "package";
-
-exec("npm pack", (exception, stdout, stderr) => {
-  if (exception != null) {
-    exitWithError(exception.message);
-  }
-  const outputLines = stdout.trim().split(/\r?\n/);
-  const fileName = outputLines[outputLines.length - 1];
-
-  fs.mkdtemp(path.join(os.tmpdir(), "pack-to-folder-"), (err, directory) => {
-    if (err != null) {
-      exitWithError(err.message);
+  exec("npm pack", (exception, stdout, stderr) => {
+    if (exception != null) {
+      exitWithError(exception.message);
     }
-    tar
-      .x({
-        cwd: directory,
-        file: fileName,
-      })
-      .then((_) => {
-        fs.rmdir(renameTo, { recursive: true }, (err) => {
-          if (err != null) {
-            exitWithError(err.message);
-          }
-          const packageFullPath = path.join(directory, CONTENT_FOLDER_NAME);
-          fs.rename(packageFullPath, renameTo, (err) => {
+    const outputLines = stdout.trim().split(/\r?\n/);
+    const fileName = outputLines[outputLines.length - 1];
+
+    fs.mkdtemp(path.join(os.tmpdir(), "pack-to-folder-"), (err, directory) => {
+      if (err != null) {
+        exitWithError(err.message);
+      }
+      tar
+        .x({
+          cwd: directory,
+          file: fileName,
+        })
+        .then((_) => {
+          fs.rmdir(renameTo, { recursive: true }, (err) => {
             if (err != null) {
               exitWithError(err.message);
             }
-            process.exit(0);
+            const packageFullPath = path.join(directory, CONTENT_FOLDER_NAME);
+            fs.rename(packageFullPath, renameTo, (err) => {
+              if (err != null) {
+                exitWithError(err.message);
+              }
+              process.exit(0);
+            });
           });
         });
-      });
+    });
   });
-});
+}

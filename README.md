@@ -1,17 +1,17 @@
 # pack-to-folder
 Runs `npm pack` command and then extracts content to folder
 
-# Requirements
+## Requirements
 `node >= 12`
 
-# Installation
+## Installation
 `npm i pack-to-folder`
 
 or 
 
 `yarn add pack-to-folder`
 
-# Usage
+## Usage
 `npx pack-to-folder [--renameTo=package]`
 
 Options:
