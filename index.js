@@ -1,5 +1,4 @@
 const tar = require("tar");
-const minimist = require("minimist");
 
 const { exec } = require("child_process");
 const fs = require("fs");
@@ -8,44 +7,49 @@ const os = require("os");
 
 const CONTENT_FOLDER_NAME = "package";
 
-function exitWithError(message) {
-  console.error(`ERROR: ${message}`);
-  process.exit(1);
-}
-
-module.exports = (options) => {
+module.exports = (options = {}) => {
   const renameTo = options["renameTo"] ?? "package";
 
-  exec("npm pack", (exception, stdout, stderr) => {
-    if (exception != null) {
-      exitWithError(exception.message);
-    }
-    const outputLines = stdout.trim().split(/\r?\n/);
-    const fileName = outputLines[outputLines.length - 1];
-
-    fs.mkdtemp(path.join(os.tmpdir(), "pack-to-folder-"), (err, directory) => {
-      if (err != null) {
-        exitWithError(err.message);
+  return new Promise((resolve, reject) => {
+    exec("npm pack", (exception, stdout, stderr) => {
+      if (exception != null) {
+        reject(exception.message);
+        return;
       }
-      tar
-        .x({
-          cwd: directory,
-          file: fileName,
-        })
-        .then((_) => {
-          fs.rmdir(renameTo, { recursive: true }, (err) => {
-            if (err != null) {
-              exitWithError(err.message);
-            }
-            const packageFullPath = path.join(directory, CONTENT_FOLDER_NAME);
-            fs.rename(packageFullPath, renameTo, (err) => {
+      const outputLines = stdout.trim().split(/\r?\n/);
+      const fileName = outputLines[outputLines.length - 1];
+
+      fs.mkdtemp(path.join(os.tmpdir(), "pack-to-folder-"), (err, directory) => {
+        if (err != null) {
+          reject(err.message);
+          return;
+        }
+        tar
+          .x({
+            cwd: directory,
+            file: fileName,
+          })
+          .then((_) => {
+            fs.rmdir(renameTo, { recursive: true }, (err) => {
               if (err != null) {
-                exitWithError(err.message);
+                reject(err.message);
+                return;
               }
-              process.exit(0);
+              const packageFullPath = path.join(directory, CONTENT_FOLDER_NAME);
+              fs.rename(packageFullPath, renameTo, (err) => {
+                if (err != null) {
+                  reject(err.message);
+                  return;
+                }
+                resolve();
+              });
             });
+          })
+          .catch((e) => {
+            reject(`Unable to unpack file ${fileName}. ${e.message ?? 'Unknown error'}`)
           });
-        });
+      });
     });
-  });
+  })
+
 }
