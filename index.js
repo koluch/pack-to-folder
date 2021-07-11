@@ -1,12 +1,7 @@
 const tar = require("tar");
-const util = require("util");
 
 const { exec } = require("child_process");
 const fs = require("fs");
-const path = require("path");
-const os = require("os");
-
-const fsAccess = util.promisify(fs.access);
 
 const CONTENT_FOLDER_NAME = "package";
 

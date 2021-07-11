@@ -7,7 +7,7 @@
     "pack-to-folder": "./cli.js"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "author": {
     "name": "Nikolai Mavrenkov",
