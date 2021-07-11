@@ -19,37 +19,36 @@ module.exports = (options = {}) => {
       const outputLines = stdout.trim().split(/\r?\n/);
       const fileName = outputLines[outputLines.length - 1];
 
-      fs.mkdtemp(path.join(os.tmpdir(), "pack-to-folder-"), (err, directory) => {
-        if (err != null) {
-          reject(err.message);
-          return;
-        }
+      fs.rmdir(renameTo, { recursive: true }, (err) => {
         tar
           .x({
-            cwd: directory,
             file: fileName,
           })
           .then((_) => {
-            fs.rmdir(renameTo, { recursive: true }, (err) => {
-              if (err != null) {
-                reject(err.message);
-                return;
-              }
-              const packageFullPath = path.join(directory, CONTENT_FOLDER_NAME);
-              fs.rename(packageFullPath, renameTo, (err) => {
+            if (err != null && err.code !== "ENOENT") {
+              reject(err.message);
+              return;
+            }
+            if (renameTo !== CONTENT_FOLDER_NAME) {
+              fs.rename(CONTENT_FOLDER_NAME, renameTo, (err) => {
                 if (err != null) {
                   reject(err.message);
                   return;
                 }
                 resolve();
               });
-            });
+            } else {
+              resolve();
+            }
           })
           .catch((e) => {
-            reject(`Unable to unpack file ${fileName}. ${e.message ?? 'Unknown error'}`)
+            reject(
+              `Unable to unpack file ${fileName}. ${
+                e.message ?? "Unknown error"
+              }`
+            );
           });
       });
     });
-  })
-
-}
+  });
+};

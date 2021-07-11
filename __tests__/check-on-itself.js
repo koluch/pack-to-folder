@@ -1,22 +1,9 @@
-// const fs = require("fs");
 const fs = require("fs/promises");
 const { constants } = require("fs");
 const path = require("path");
 const os = require("os");
 
 const lib = require("../index.js");
-
-// beforeEach(() => {
-//   return new Promise((resolve, reject) => {
-//     fs.mkdtemp(path.join(os.tmpdir(), 'pack-to-folder-tests-'), (err, folder) => {
-//       if (err) {
-//         reject(err);
-//       }
-//       process.chdir(folder)
-//       resolve(folder)
-//     });
-//   })
-// })
 
 test("no options", async () => {
   await lib({});
