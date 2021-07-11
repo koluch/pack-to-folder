@@ -44,7 +44,7 @@ module.exports = (options = {}) => {
           .catch((e) => {
             reject(
               `Unable to unpack file ${fileName}. ${
-                e.message ?? "Unknown error"
+                e.message || "Unknown error"
               }`
             );
           });
